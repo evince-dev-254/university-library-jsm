@@ -8,6 +8,13 @@
       "when": 1760937340527,
       "tag": "0000_lively_redwing",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1761034632323,
+      "tag": "0001_lumpy_energizer",
+      "breakpoints": true
     }
   ]
 }

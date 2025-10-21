@@ -12,12 +12,19 @@ import { redirect } from "next/navigation";
 
 export async function signUp(formData: FormData) {
   try {
-    const ip = (await headers()).get("x-forwarded-for") || "127.0.0.1";
-    const { success } = await ratelimit.limit(ip);
+    // Rate limiting with better error handling
+    try {
+      const ip = (await headers()).get("x-forwarded-for") || "127.0.0.1";
+      const { success } = await ratelimit.limit(ip);
 
-    if (!success) {
-      redirect("/too-fast");
+      if (!success) {
+        return { success: false, message: "Too many requests. Please try again later." };
+      }
+    } catch (rateLimitError) {
+      console.warn("Rate limiting failed, continuing:", rateLimitError);
+      // Continue without rate limiting if it fails
     }
+
     const data = {
       email: formData.get("email") as string,
       password: formData.get("password") as string,
@@ -26,21 +33,27 @@ export async function signUp(formData: FormData) {
       universityCard: formData.get("universityCard") as File,
     };
 
-
+    // Validate data
     const validatedData = signUpSchema.parse(data);
-    // Ensure user doesn't already exist
+    
+    // Check if user already exists
     const existing = await db
       .select()
       .from(usersTable)
       .where(eq(usersTable.email, validatedData.email))
       .limit(1);
+    
     if (existing[0]) {
       return { success: false, message: "User already exists" };
     }
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 10);
-    const fileName = validatedData.universityCard?.name ?? "";
+    
+    // Handle file upload - store just the filename for now
+    const fileName = validatedData.universityCard?.name ?? `card_${Date.now()}.jpg`;
 
+    // Insert user into database
     await db.insert(usersTable).values({
       fullName: validatedData.fullName,
       email: validatedData.email,
@@ -49,16 +62,33 @@ export async function signUp(formData: FormData) {
       universityCard: fileName,
     });
 
-    // Auto-sign-in after successful sign-up so user lands on home
-    await nextAuthSignIn("credentials", {
-      email: validatedData.email,
-      password: validatedData.password,
-      redirect: false,
-    });
+    // Auto-sign-in after successful sign-up
+    try {
+      await nextAuthSignIn("credentials", {
+        email: validatedData.email,
+        password: validatedData.password,
+        redirect: false,
+      });
+    } catch (signInError) {
+      console.warn("Auto sign-in failed, but user was created:", signInError);
+      // User was created successfully, just auto sign-in failed
+    }
+
     return { success: true, message: "Account created successfully!" };
   } catch (error) {
     console.error("Sign up error:", error);
-    return { success: false, message: "Failed to create account" };
+    
+    // More specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes("duplicate key")) {
+        return { success: false, message: "User already exists" };
+      }
+      if (error.message.includes("database")) {
+        return { success: false, message: "Database error. Please try again." };
+      }
+    }
+    
+    return { success: false, message: "Failed to create account. Please try again." };
   }
 }
 
