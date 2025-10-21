@@ -9,6 +9,7 @@ import bcrypt from "bcryptjs";
 import ratelimit from "../ratelimit";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { emailService } from "@/lib/services/emailService";
 
 export async function signUp(formData: FormData) {
   try {
@@ -72,6 +73,20 @@ export async function signUp(formData: FormData) {
     } catch (signInError) {
       console.warn("Auto sign-in failed, but user was created:", signInError);
       // User was created successfully, just auto sign-in failed
+    }
+
+    // Send welcome email (don't block sign-up if email fails)
+    try {
+      await emailService.sendWelcomeEmail({
+        user_name: validatedData.fullName,
+        user_email: validatedData.email,
+        university_id: validatedData.universityId,
+        library_name: "BookWise Library",
+      });
+      console.log("Welcome email sent successfully");
+    } catch (emailError) {
+      console.warn("Welcome email failed to send:", emailError);
+      // Don't fail sign-up if email fails
     }
 
     return { success: true, message: "Account created successfully!" };
