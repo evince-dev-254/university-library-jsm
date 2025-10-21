@@ -1,0 +1,143 @@
+/* Admin Panel Styles */
+
+.admin-layout {
+  @apply min-h-screen bg-gray-50;
+}
+
+.admin-sidebar {
+  @apply fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-40;
+}
+
+.admin-main {
+  @apply ml-64 flex-1;
+}
+
+.admin-header {
+  @apply bg-white shadow-sm border-b border-gray-200;
+}
+
+.admin-content {
+  @apply p-6;
+}
+
+/* Admin Form Styles */
+.admin-form {
+  @apply space-y-6;
+}
+
+.admin-form-group {
+  @apply space-y-2;
+}
+
+.admin-form-label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.admin-form-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+}
+
+.admin-form-textarea {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px];
+}
+
+.admin-form-select {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+}
+
+/* Admin Button Styles */
+.admin-btn {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.admin-btn-primary {
+  @apply admin-btn bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+}
+
+.admin-btn-secondary {
+  @apply admin-btn bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500;
+}
+
+.admin-btn-danger {
+  @apply admin-btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+}
+
+/* Admin Table Styles */
+.admin-table {
+  @apply min-w-full divide-y divide-gray-200;
+}
+
+.admin-table-header {
+  @apply bg-gray-50;
+}
+
+.admin-table-header-cell {
+  @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+}
+
+.admin-table-body {
+  @apply bg-white divide-y divide-gray-200;
+}
+
+.admin-table-row {
+  @apply hover:bg-gray-50;
+}
+
+.admin-table-cell {
+  @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900;
+}
+
+/* Admin Card Styles */
+.admin-card {
+  @apply bg-white shadow rounded-lg;
+}
+
+.admin-card-header {
+  @apply px-6 py-4 border-b border-gray-200;
+}
+
+.admin-card-title {
+  @apply text-lg font-medium text-gray-900;
+}
+
+.admin-card-content {
+  @apply px-6 py-4;
+}
+
+/* Admin Navigation Styles */
+.admin-nav {
+  @apply space-y-1;
+}
+
+.admin-nav-item {
+  @apply flex items-center px-3 py-2 text-sm font-medium rounded-md;
+}
+
+.admin-nav-item-active {
+  @apply admin-nav-item bg-blue-100 text-blue-700;
+}
+
+.admin-nav-item-inactive {
+  @apply admin-nav-item text-gray-600 hover:bg-gray-50 hover:text-gray-900;
+}
+
+.admin-nav-icon {
+  @apply mr-3 h-5 w-5;
+}
+
+/* Admin Status Styles */
+.admin-status {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.admin-status-active {
+  @apply admin-status bg-green-100 text-green-800;
+}
+
+.admin-status-inactive {
+  @apply admin-status bg-red-100 text-red-800;
+}
+
+.admin-status-pending {
+  @apply admin-status bg-yellow-100 text-yellow-800;
+}

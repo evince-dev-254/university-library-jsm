@@ -12,3 +12,12 @@ export const signInSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
 });
+
+export const bookSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  author: z.string().min(1, "Author is required"),
+  description: z.string().min(1, "Description is required"),
+  isbn: z.string().min(1, "ISBN is required"),
+  coverColor: z.string().min(1, "Cover color is required"),
+  coverImage: z.string().optional(),
+});
