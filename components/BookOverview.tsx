@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import BookCover from "./BookCover";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
+import { useEmail } from "@/hooks/useEmail";
 
 interface Props extends Book {
   userId?: string;
@@ -19,6 +21,67 @@ const BookOverview = ({
   id,
   userId,
 }: Props) => {
+  const [isBorrowing, setIsBorrowing] = useState(false);
+  const [isBorrowed, setIsBorrowed] = useState(false);
+  const { sendBookBorrowedEmail } = useEmail();
+
+  const handleBorrow = async () => {
+    if (available_copies <= 0) {
+      toast({
+        title: "Book Not Available",
+        description: "Sorry, this book is currently not available for borrowing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (isBorrowed) {
+      toast({
+        title: "Already Borrowed",
+        description: "You have already borrowed this book.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsBorrowing(true);
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Calculate return date (14 days from now)
+      const returnDate = new Date();
+      returnDate.setDate(returnDate.getDate() + 14);
+      const returnDateStr = returnDate.toLocaleDateString();
+
+      // Send email notification
+      await sendBookBorrowedEmail({
+        user_name: "User", // In real app, get from auth context
+        user_email: "user@example.com", // In real app, get from auth context
+        book_title: title,
+        book_author: author,
+        borrow_date: new Date().toLocaleDateString(),
+        return_date: returnDateStr,
+      });
+
+      setIsBorrowed(true);
+      
+      toast({
+        title: "Book Borrowed Successfully!",
+        description: `You have borrowed "${title}" by ${author}. Please return by ${returnDateStr}.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Borrow Failed",
+        description: "Failed to borrow the book. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsBorrowing(false);
+    }
+  };
+
   return (
     <section className="book-overview flex flex-col lg:flex-row gap-6 lg:gap-8 items-start px-4 sm:px-6 lg:px-8">
       {/* Left side - Book details */}
@@ -51,9 +114,28 @@ const BookOverview = ({
           {description}
         </p>
         
-        <Button className="bg-yellow-200 text-gray-800 hover:bg-yellow-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg flex items-center gap-2 text-sm sm:text-base font-bold w-full sm:w-auto">
+        <Button 
+          onClick={handleBorrow}
+          disabled={isBorrowing || isBorrowed || available_copies <= 0}
+          className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg flex items-center gap-2 text-sm sm:text-base font-bold w-full sm:w-auto ${
+            isBorrowed 
+              ? 'bg-green-200 text-green-800 hover:bg-green-300' 
+              : available_copies <= 0
+              ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+              : 'bg-yellow-200 text-gray-800 hover:bg-yellow-300'
+          }`}
+        >
           <img src="/icons/book.svg" alt="book" width={20} height={20} />
-          <span>BORROW</span>
+          <span>
+            {isBorrowing 
+              ? 'BORROWING...' 
+              : isBorrowed 
+              ? 'BORROWED' 
+              : available_copies <= 0
+              ? 'NOT AVAILABLE'
+              : 'BORROW'
+            }
+          </span>
         </Button>
       </div>
 
