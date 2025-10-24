@@ -116,29 +116,29 @@ const BookOverview = ({
           {description}
         </p>
         
-        <Button 
-          onClick={handleBorrow}
-          disabled={isBorrowing || isBorrowed || available_copies <= 0}
-          className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg flex items-center gap-2 text-sm sm:text-base font-bold w-full sm:w-auto ${
-            isBorrowed 
-              ? 'bg-green-200 text-green-800 hover:bg-green-300' 
-              : available_copies <= 0
-              ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-              : 'bg-yellow-200 text-gray-800 hover:bg-yellow-300'
-          }`}
-        >
-          <img src="/icons/book.svg" alt="book" width={20} height={20} />
-          <span>
-            {isBorrowing 
-              ? 'BORROWING...' 
-              : isBorrowed 
-              ? 'BORROWED' 
-              : available_copies <= 0
-              ? 'NOT AVAILABLE'
-              : 'BORROW'
-            }
-          </span>
-        </Button>
+            <Button 
+              onClick={handleBorrow}
+              disabled={isBorrowing || isBorrowed || available_copies <= 0}
+              className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg flex items-center gap-2 text-sm sm:text-base font-bold w-full sm:w-auto ${
+                isBorrowed 
+                  ? 'bg-green-200 text-green-800 hover:bg-green-300' 
+                  : available_copies <= 0
+                  ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                  : 'bg-yellow-200 text-gray-800 hover:bg-yellow-300'
+              }`}
+            >
+              <img src="/icons/book.svg" alt="book" width={20} height={20} />
+              <span>
+                {isBorrowing 
+                  ? 'BORROWING...' 
+                  : isBorrowed 
+                  ? 'BORROWED' 
+                  : available_copies <= 0
+                  ? 'NOT AVAILABLE'
+                  : 'BORROW NOW'
+                }
+              </span>
+            </Button>
       </div>
 
       {/* Right side - Two stacked book covers */}

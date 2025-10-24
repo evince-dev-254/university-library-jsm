@@ -16,7 +16,7 @@ const BookCard = ({ book }: BookCardProps) => {
   const { sendBookBorrowedEmail } = useEmail();
   const router = useRouter();
 
-  const handleBorrow = async (e: React.MouseEvent) => {
+  const handleBorrow = (e: React.MouseEvent) => {
     e.stopPropagation();
     
     if (book.available_copies <= 0) {
@@ -28,51 +28,8 @@ const BookCard = ({ book }: BookCardProps) => {
       return;
     }
 
-    if (isBorrowed) {
-      toast({
-        title: "Already Borrowed",
-        description: "You have already borrowed this book.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsBorrowing(true);
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Calculate return date (14 days from now)
-      const returnDate = new Date();
-      returnDate.setDate(returnDate.getDate() + 14);
-      const returnDateStr = returnDate.toLocaleDateString();
-
-      // Send email notification
-      await sendBookBorrowedEmail({
-        user_name: "User", // In real app, get from auth context
-        user_email: "user@example.com", // In real app, get from auth context
-        book_title: book.title,
-        book_author: book.author,
-        borrow_date: new Date().toLocaleDateString(),
-        return_date: returnDateStr,
-      });
-
-      setIsBorrowed(true);
-      
-      toast({
-        title: "Book Borrowed Successfully!",
-        description: `You have borrowed "${book.title}" by ${book.author}. Please return by ${returnDateStr}.`,
-      });
-    } catch (error) {
-      toast({
-        title: "Borrow Failed",
-        description: "Failed to borrow the book. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsBorrowing(false);
-    }
+    // Navigate to book detail page
+    router.push(`/books/${book.id}`);
   };
 
   const handleViewDetails = () => {
@@ -106,22 +63,16 @@ const BookCard = ({ book }: BookCardProps) => {
       
       <Button 
         onClick={handleBorrow}
-        disabled={isBorrowing || isBorrowed || book.available_copies <= 0}
+        disabled={book.available_copies <= 0}
         className={`w-full text-xs py-2 ${
-          isBorrowed 
-            ? 'bg-green-200 text-green-800 hover:bg-green-300' 
-            : book.available_copies <= 0
+          book.available_copies <= 0
             ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
             : 'bg-yellow-200 text-gray-800 hover:bg-yellow-300'
         }`}
       >
-        {isBorrowing 
-          ? 'BORROWING...' 
-          : isBorrowed 
-          ? 'BORROWED' 
-          : book.available_copies <= 0
+        {book.available_copies <= 0
           ? 'NOT AVAILABLE'
-          : 'BORROW'
+          : 'VIEW DETAILS'
         }
       </Button>
     </div>
