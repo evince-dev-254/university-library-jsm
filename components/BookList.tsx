@@ -1,5 +1,7 @@
+"use client";
+
 import { cn } from "@/lib/utils";
-import BookCard from "./ui/BookCard";
+import BookCard from "./BookCard";
 
 interface BookListProps {
   title: string;
@@ -17,8 +19,7 @@ const BookList = ({ title, books, containerClassName }: BookListProps) => {
         {books.map((book) => (
           <BookCard
             key={book.id}
-            {...book}
-            className="transition-all duration-300 ease-in-out hover:scale-105 hover:-translate-y-2 hover:z-20"
+            book={book}
           />
         ))}
       </ul>

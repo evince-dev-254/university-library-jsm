@@ -23,10 +23,12 @@ const Header = ({ session }: HeaderProps) => {
       </Link>
 
       <div className="flex items-center gap-4">
-        <Button className={cn(
-          "text-base cursor-pointer capitalize",
-          pathname === "/library" ? "text-light-100" : "text-light-500"
-        )}>Library</Button>
+        <Link href="/library">
+          <Button className={cn(
+            "text-base cursor-pointer capitalize",
+            pathname === "/library" ? "text-light-100" : "text-light-500"
+          )}>Library</Button>
+        </Link>
         
         <Link 
           href="/my-profile" 
